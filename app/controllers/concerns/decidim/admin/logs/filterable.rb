@@ -21,13 +21,12 @@ module Decidim
           end
 
           def filters
-            [ :spid_operation, :cie_operation, :action_type]
+            [ :federa_operation, :action_type]
           end
 
           def filters_with_values
             {
-              spid_operation: %w(true),
-              cie_operation: %w(true),
+              federa_operation: %w(true),
               action_type: %w(registration login logout),
             }
           end

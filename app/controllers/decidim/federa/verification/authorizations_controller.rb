@@ -1,9 +1,3 @@
-
-
-# frozen_string_literal: true
-
-# Aggiunge la possibilità di collegare l'account CIE dalle impostazioni
-# dell'utente se le autorizzazioni sono abilitate da /system
 module Decidim
   module Federa
     module Verification

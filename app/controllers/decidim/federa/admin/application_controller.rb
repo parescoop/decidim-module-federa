@@ -1,7 +1,5 @@
-
-
 module Decidim
-  module Spid
+  module Federa
     module Admin
       class ApplicationController < Decidim::Admin::ApplicationController
       end

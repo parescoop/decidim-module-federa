@@ -20,7 +20,7 @@ module Decidim
         delegate_destroy_to_participatory_spaces
       end
 
-      Rails.logger.info("decidim-module-spid-cie || Distrutto utente #{@user.id}: il record sul DB è ancora presente, viene soltanto 'ripulito' dai dati personali.")
+      Rails.logger.info("decidim-module-federa || Distrutto utente #{@user.id}: il record sul DB è ancora presente, viene soltanto 'ripulito' dai dati personali.")
 
       broadcast(:ok)
     end

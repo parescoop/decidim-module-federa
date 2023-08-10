@@ -22,12 +22,8 @@ module Decidim
                   .for_admin
 
         if params[:q]
-          if params[:q][:spid_operation] == 'true'
-            identity_ids = Decidim::Identity.where(provider: Decidim::Spid.tenants.map(&:name))
-            @logs = @logs.where(resource_type: "Decidim::Identity", resource_id: identity_ids)
-          end
-          if params[:q][:cie_operation] == 'true'
-            identity_ids = Decidim::Identity.where(provider: Decidim::Cie.tenants.map(&:name))
+          if params[:q][:federa_operation] == 'true'
+            identity_ids = Decidim::Identity.where(provider: Decidim::Federa.tenants.map(&:name))
             @logs = @logs.where(resource_type: "Decidim::Identity", resource_id: identity_ids)
           end
           if params[:q][:from].present?

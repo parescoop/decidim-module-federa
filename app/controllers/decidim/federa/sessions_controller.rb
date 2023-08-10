@@ -1,23 +1,12 @@
-
-
-# frozen_string_literal: true
-
-# Gestisce il logout CIE, SPID o standard
 module Decidim
-  module Spid
+  module Federa
     class SessionsController < ::Decidim::Devise::SessionsController
 
-      include Decidim::Spid::Utils
-
       def destroy
-        if session.delete("decidim-cie.signed_in")
+        if session.delete("decidim-federa.signed_in")
           i = current_user.identities.find_by(uid: session["#{session_prefix}uid"]) rescue nil
           Decidim::ActionLogger.log(:logout, current_user, i, {}) if i
-          redirect_to decidim_cie.public_send("user_#{current_organization.enabled_omniauth_providers.dig(:cie, :tenant_name)}_omniauth_spslo_url")
-        elsif session.delete("decidim-spid.signed_in")
-          i = current_user.identities.find_by(uid: session["#{session_prefix}uid"]) rescue nil
-          Decidim::ActionLogger.log(:logout, current_user, i, {}) if i
-          redirect_to decidim_spid.public_send("user_#{current_organization.enabled_omniauth_providers.dig(:spid, :tenant_name)}_omniauth_spslo_url")
+          redirect_to decidim_federa.public_send("user_#{current_organization.enabled_omniauth_providers.dig(:federa, :tenant_name)}_omniauth_spslo_url")
         else
           super
         end
@@ -33,18 +22,18 @@ module Decidim
 
       def tenant
         @tenant ||= begin
-                      name = session["tenant-spid-name"]
-                      raise "Invalid SPID tenant" unless name
+                      name = session["tenant-federa-name"]
+                      raise "Invalid FedERa tenant" unless name
 
-                      tenant = Decidim::Spid.tenants.find { |t| t.name == name }
-                      raise "Unkown SPID tenant: #{name}" unless tenant
+                      tenant = Decidim::Federa.tenants.find { |t| t.name == name }
+                      raise "Unkown FedERa tenant: #{name}" unless tenant
 
                       tenant
                     end
       end
 
       def session_prefix
-        tenant.name + '_spid_'
+        tenant.name + '_federa_'
       end
     end
   end

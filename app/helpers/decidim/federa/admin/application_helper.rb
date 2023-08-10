@@ -7,7 +7,7 @@ module Decidim
 
         def federa_icon
           content_tag :span, class: 'federa-badge' do
-            image_pack_tag 'media/images/federa-logo.svg', alt: "FedERa Icon"
+            image_pack_tag 'media/images/federa-logo.jpg', alt: "FedERa Icon"
           end
         end
       end
