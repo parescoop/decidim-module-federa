@@ -1,0 +1,115 @@
+---
+en:
+  activerecord:
+    errors:
+      models:
+        decidim/user:
+          attributes:
+            email:
+              cant_recover_password_due_federa: You must login via FedERa
+  decidim:
+    admin:
+      filters:
+        federa_presence:
+          label: FedERa
+          values:
+            'false': Not enabled
+            'true': Enabled
+        federa_operation:
+          label: FedERa
+          values:
+            'true': Only FedERa
+        action_type:
+          label: Action type
+          values:
+            'registration': Registration
+            'login': Login
+            'logout': Logout
+        from:
+          label: Data from
+        to:
+          label: Date to
+    admin_log:
+      identity:
+        logout: "%{user_name} logged out with provider %{resource_name} %{space_name}"
+        login: "%{user_name} logged in with provider %{resource_name} %{space_name}"
+        registration: "%{user_name} registered with provider %{resource_name} %{space_name} "
+    components:
+      decidim_federa:
+        name: FedERa
+      federa:
+        name: FedERa
+    federa:
+      admin:
+        actions:
+          export: Export private users
+      devise:
+        invitations:
+          edit:
+            header: Complete registration
+            subtitle: Login via FedERa
+      omniauth_callbacks:
+        failure:
+          success_status: "An error occurred while logging in."
+          already_authorized: "User already logged in"
+          identity_bound_to_other_user: "An error occurred while logging in."
+          session_expiration: "Session expired"
+          conditions: ""
+        create:
+          email_already_exists: Another account is using the same email address
+          email_different: The email address entered is different from that of the invitation
+        new:
+          complete_profile: Complete profile
+          nickname_help: Your alias in %{organization}. Can only contain letters, numbers, '-' and '_'.
+          sign_up: Please complete your profile
+          subtitle: Please fill in the following form in order to complete the sign up
+          username_help: Public name that appears on your posts. With the aim of guaranteeing the anonymity, can be any name.
+      slo_request:
+        failure: The logout was not successful
+        success: Logout completed successfully
+      sso_request:
+        failure: The login was not successful
+        success: Login completed successfully
+        failure_19: Authentication failed due to repeated submission of incorrect credentials.
+        failure_20: User with no credentials compatible with the level required by the service provider.
+        failure_21: Timeout during user authentication.
+        failure_22: User denies consent to send data to the SP in case of session in force.
+        failure_23: User with suspended / revoked identity or with blocked credentials.
+        failure_24: The login was not successful
+        failure_25: Authentication process canceled by user.
+      federa:
+        info_message: If this is your first time accessing this platform, please ignore this message. Instead, to connect the old user log in first and then log in from the profile.
+        disclaimer: "FedERa is the access system that allows you to use the online services of the Public Administration and accredited private individuals with a unique digital identity. If you already have a digital identity, log in with your manager's credentials. If you don't have a digital identity yet, request it from one of the managers."
+        link: More information on FedERa
+        request: Don't have FedERa?
+        help: Need help?
+      federa_mailer:
+        subject: account association successful
+        send_notification:
+          dear_user: "Dear user,"
+          content: "your Decidim account has been successfully associated with your FedERa account. From now on your credentials have been deactivated and I may continue to log in with your FedERa account."
+      cie_mailer:
+        subject: account association successful
+        send_notification:
+          dear_user: "Dear user,"
+          content: "your Decidim account has been successfully associated with your CIE account. From now on your credentials have been deactivated and I may continue to log in with your CIE account."
+      verification:
+        authorizations:
+          create:
+            success: You have been successfully authorized through FedERa
+    system:
+      organizations:
+        omniauth_settings:
+          validation_alert: "The \"name\" must also be different between the FedERa configuration."
+          federa:
+            tenant_name: "Enter the \"name\" used to identify tenant configurations."
+            certificate: "The certificate expires on %{date}"
+            new_certificate: "The new certificate expires on %{date}"
+            button_size: "Button size must to be in [ s, m, l, xl]. Default: m"
+  devise:
+    shared:
+      links:
+        sign_in_with_provider_federa: Login
+    failure:
+      user:
+        invalid_due_federa: You must login via FedERa

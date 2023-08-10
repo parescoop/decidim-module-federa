@@ -1,0 +1,20 @@
+<%
+  tenant_name = current_organization.enabled_omniauth_providers.dig(:federa, :tenant_name)
+%>
+
+<div class="row">
+  <p>
+    <strong>
+      <%= t("decidim.authorization_handlers.#{tenant_name}_identity.title") %>
+    </strong>
+  </p>
+  <p>
+    <%= t("decidim.authorization_handlers.#{tenant_name}_identity.description") %>
+  </p>
+</div>
+
+<% size = current_organization.enabled_omniauth_providers.dig(:federa, :button_size).presence || "m" %>
+<%= button_to decidim_federa.send("user_#{current_organization.enabled_omniauth_providers.dig(:federa, :tenant_name)}_omniauth_authorize_path"),
+              class: "button button--social button--#{normalize_provider_name(:federa)}", form_class: "button--#{size}" do %>
+  <%= t("devise.shared.links.sign_in_with_provider_federa") %>
+<% end %>

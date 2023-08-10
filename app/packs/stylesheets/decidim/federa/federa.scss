@@ -1,0 +1,59 @@
+@mixin button-federa {
+  &:only-child {
+    margin-bottom: 100px;
+  }
+  .button--federa {
+    background-color: #06c;
+    border-color: #06c;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 12px;
+    text-align: center;
+
+    .button--social__text {
+      margin-left: 0;
+      text-align: center;
+    }
+
+    &:hover, &:active, &:focus {
+      color: #fff;
+      background-color: #0053a6;
+      border-color: #004d99;
+    }
+  }
+}
+
+.button--s {
+  @include button-federa;
+  button {
+    margin: 0 auto;
+    width: 50%;
+    min-width: 0;
+  }
+}
+
+.button--m {
+  @include button-federa;
+  button {
+    margin: 0 auto;
+    width: 65%;
+    min-width: 0;
+  }
+}
+
+.button--l {
+  @include button-federa;
+  button {
+    margin: 0 auto;
+    width: 80%;
+    min-width: 0;
+  }
+}
+
+.button--xl {
+  @include button-federa;
+  button {
+    margin: 0 auto;
+    width: 100%;
+  }
+}
