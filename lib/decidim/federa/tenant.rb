@@ -23,7 +23,7 @@ module Decidim
       end
 
       # Certificato in stringa
-      config_accessor :certificate, instance_reader: false
+      config_accessor :certificate, instance_reader: true
 
       # Percorso relativo alla root dell'app del certificato
       config_accessor :certificate_file do
@@ -39,7 +39,7 @@ module Decidim
       end
 
       # Nuovo certificato in stringa
-      config_accessor :new_certificate, instance_reader: false
+      config_accessor :new_certificate, instance_reader: true
 
       # Percorso relativo alla root dell'app del nuovo certificato
       config_accessor :new_certificate_file do
