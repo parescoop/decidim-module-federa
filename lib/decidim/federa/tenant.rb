@@ -161,9 +161,9 @@ module Decidim
           sp_metadata: sp_metadata,
           certificate: certificate,
           private_key: private_key,
-          assertion_consumer_service_url: "#{application_host}/users/auth/#{config.name}/callback",
+          assertion_consumer_service_url: "#{sp_entity_id}/users/auth/#{config.name}/callback",
           request_attributes: attribute_services,
-          single_logout_service_url: "#{application_host}/users/auth/#{config.name}/slo"
+          single_logout_service_url: "#{sp_entity_id}/users/auth/#{config.name}/slo"
         }.merge(extra)
       end
 
