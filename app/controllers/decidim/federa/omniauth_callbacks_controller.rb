@@ -22,10 +22,19 @@ module Decidim
           return fail_authorize unless authorize_user(current_user)
 
           # Aggiorna le informazioni dell'utente
-          authenticator.update_user!(current_user)
+          authenticator.update_user!(current_user, true)
+
+          # to force remain logged in
+          u = current_user
+          sign_out(current_user)
+          sign_in(u) if u.reload.confirmed?
+          if !isnt_cie_or_cns? && !u.confirmed?
+            flash[:notice] = t("devise.registrations.signed_up_but_unconfirmed")
+          else
+            flash[:notice] = t("authorizations.create.success", scope: "decidim.federa.verification")
+          end
 
           Decidim::Federa::FederaJob.perform_later(current_user)
-          flash[:notice] = t("authorizations.create.success", scope: "decidim.federa.verification")
           return redirect_to(stored_location_for(resource || :user) || decidim.root_path)
         end
 
@@ -41,7 +50,7 @@ module Decidim
       def create
         form_params = user_params_from_oauth_hash || params.require(:user).permit!
         form_params.merge!(params.require(:user).permit!) if params.dig(:user).present?
-        origin = Base64.strict_decode64(session[:"#{session_prefix}sso_params"]["relay_state"]) rescue ''
+        origin = Base64.strict_decode64(params['RelayState']) rescue ''
 
         invitation_token = invitation_token(origin)
         verified_e = verified_email
@@ -57,8 +66,13 @@ module Decidim
           @form.email ||= invited_user.email
           verified_e = invited_user.email
         else
-          form_params[:name] = params.dig(:user, :name) if params.dig(:user, :name).present?
-          form_params[:nickname] = params.dig(:user, :nickname) if params.dig(:user, :nickname).present?
+          if current_provider && isnt_cie_or_cns? && (u = current_organization.users.find_by(email: verified_e))
+            form_params[:name] = u.name
+            form_params[:nickname] = u.nickname
+          else
+            form_params[:name] = params.dig(:user, :name) if params.dig(:user, :name).present? && isnt_cie_or_cns?
+            form_params[:nickname] = params.dig(:user, :nickname) if params.dig(:user, :nickname).present? && isnt_cie_or_cns?
+          end
           @form = form(OmniauthFederaRegistrationForm).from_params(form_params)
           @form.email ||= verified_e
           verified_e ||= form_params.dig(:email)
@@ -103,7 +117,7 @@ module Decidim
               if existing_identity
                 Decidim::ActionLogger.log(:login, user, existing_identity, {})
               else
-                i = user.identities.find_by(uid: session["#{session_prefix}uid"]) rescue nil
+                i = user.identities.find_by(uid: @form.uid) rescue nil
                 Decidim::ActionLogger.log(:registration, user, i, {})
               end
               sign_in_and_redirect user, verified_email: verified_e, event: :authentication
@@ -197,11 +211,12 @@ module Decidim
 
       def tenant
         @tenant ||= begin
-                      name = session["tenant-federa-name"]
-                      raise "Invalid FEDERA tenant" unless name
+                      matches = request.path.match(%r{^/users/auth/([^/]+)/.+})
+                      raise "Invalid FedERa tenant" unless matches
 
+                      name = matches[1]
                       tenant = Decidim::Federa.tenants.find { |t| t.name == name }
-                      raise "Unkown FEDERA tenant: #{name}" unless tenant
+                      raise "Unkown FedERa tenant: #{name}" unless tenant
 
                       tenant
                     end
@@ -226,8 +241,17 @@ module Decidim
       def oauth_hash
         raw_hash = request.env["omniauth.auth"] || JSON.parse(params.dig(:user, :raw_data))
         return {} unless raw_hash
+        raw_hash.try(:[], 'extra').try(:delete, 'response_object')
 
         raw_hash.deep_symbolize_keys
+      end
+
+      def isnt_cie_or_cns?
+        current_provider && !["smartcard"].include?(current_provider.try(&:downcase))
+      end
+
+      def current_provider
+        @current_provider ||= current_provider = oauth_hash.dig(:extra, :raw_info, :authenticationMethod)
       end
     end
   end

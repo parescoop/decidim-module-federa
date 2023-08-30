@@ -88,6 +88,10 @@ en:
         send_notification:
           dear_user: "Dear user,"
           content: "your Decidim account has been successfully associated with your FedERa account. From now on your credentials have been deactivated and I may continue to log in with your FedERa account."
+        send_update_email_notification:
+          subject: Account email updated
+          dear_user: "Dear user,"
+          content: "your email has been successfully updated with email incoming from FedERa account."
       verification:
         authorizations:
           create:

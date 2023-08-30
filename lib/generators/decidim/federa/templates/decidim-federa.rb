@@ -34,6 +34,9 @@ Decidim::Federa.configure do |config|
   # Percorso relativo alla root dell'app del nuovo certificato
   config.new_certificate_file = ".keys/new_certificate.pem"
 
+  # Il livello SPID richiesto dall'app
+  config.spid_level = 2
+
   #todo: verificare
   # Le chiavi che verranno salvate sul DB nell'autorizzazione
   config.metadata_attributes = {
@@ -71,23 +74,24 @@ Decidim::Federa.configure do |config|
   #   ]
   # end
 
-  # Configurare attributi necessari
-  # config.attribute_services = [
-  #   { name: "name", friendly_name: "Nome", is_required: true },
-  #   { name: "familyName", friendly_name: "Cognome", is_required: true },
-  #   { name: "fiscalNumber", friendly_name: "Codice Fiscale", is_required: true },
-  #   { name: "spidCode", friendly_name: "Codice SPID", is_required: true },
-  #   { name: "email", friendly_name: "Email", is_required: true },
-  #   { name: "gender", friendly_name: "Genere", is_required: true },
-  #   { name: "dateOfBirth", friendly_name: "Data di nascita", is_required: true },
-  #   { name: "placeOfBirth", friendly_name: "Luogo di nascita", is_required: true },
-  #   { name: "registeredOffice", friendly_name: "registeredOffice", is_required: true },
-  #   { name: "ivaCode", friendly_name: "Partita IVA", is_required: true },
-  #   { name: "idCard", friendly_name: "ID Carta", is_required: true },
-  #   { name: "mobilePhone", friendly_name: "Numero di telefono", is_required: true },
-  #   { name: "address", friendly_name: "Indirizzo", is_required: true },
-  #   { name: "digitalAddress", friendly_name: "Indirizzo digitale", is_required: true }
-  # ]
+  # Dati dell'utente richiesti all'identity provider
+  # Obbligatorio CodiceFiscale.
+  config.fields = [
+    { name: "nome", friendly_name: "Nome", is_required: true },
+    { name: "cognome", friendly_name: "Cognome", is_required: true },
+    { name: "CodiceFiscale", friendly_name: "Codice Fiscale", is_required: true },
+    { name: "spidCode", friendly_name: "Codice SPID", is_required: true },
+    { name: "emailAddressPersonale", friendly_name: "Email", is_required: true },
+    { name: "sesso", friendly_name: "Genere", is_required: true },
+    { name: "dataNascita", friendly_name: "Data di nascita", is_required: true },
+    { name: "luogoNascita", friendly_name: "Luogo di nascita", is_required: true },
+    { name: "registeredOffice", friendly_name: "registeredOffice", is_required: true },
+    { name: "ivaCode", friendly_name: "Partita IVA", is_required: true },
+    { name: "idCard", friendly_name: "ID Carta", is_required: true },
+    { name: "cellulare", friendly_name: "Numero di telefono", is_required: true },
+    { name: "indirizzoResidenza", friendly_name: "Indirizzo", is_required: true },
+    { name: "emailAddress", friendly_name: "Indirizzo digitale", is_required: true }
+  ]
 
 
 end

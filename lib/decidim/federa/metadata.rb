@@ -23,7 +23,7 @@ module Decidim
 
       def add_tags_to(parent, tags)
         tags.each do |tag|
-          element = parent.add_element "md:#{tag[:name]}", tag[:attributes]
+          element = parent.add_element "#{tag[:namespace] ? tag[:namespace] : 'md'}:#{tag[:name]}", tag[:attributes]
           element.text = tag[:content] if tag[:content]
           add_tags_to(element, tag[:children]) if tag[:children].is_a?(Array)
         end

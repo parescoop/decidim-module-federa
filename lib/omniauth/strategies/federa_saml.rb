@@ -17,37 +17,46 @@ module OmniAuth
 
       option :request_attributes, []
 
+      option :uid_attribute, Rails.env.development? ? :fiscalNumber : :CodiceFiscale
+
       # If you want to pass extra security configurations, use this option.
       option :security, {}
 
-      # Maps the SAML attributes to OmniAuth info schema:
-      # https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema#schema-10-and-later
-      option(
-        :attribute_statements,
-        name: %w(http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name),
-        email: %w(http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress),
-        first_name: %w(http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname),
-        last_name: %w(http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname),
-        nickname: %w(http://schemas.microsoft.com/identity/claims/displayname)
-      )
+      option :attribute_statements, {
+        name: ["name", "nome"],
+        email: ["email", "mail", "emailAddressPersonale"],
+        first_name: ["first_name", "firstname", "firstName", "nome", "name"],
+        last_name: ["last_name", "lastname", "lastName", "cognome", "familyName"]
+      }
 
       option(:sp_metadata, [])
+
+      uid do
+        if options.uid_attribute
+          ret = find_attribute_by([options.uid_attribute])
+          if ret.nil?
+            raise OneLogin::RubySaml::ValidationError.new("SAML response missing '#{options.uid_attribute}' attribute")
+          end
+          ret
+        else
+          @name_id
+        end
+      end
 
       info do
         found_attributes = options.attribute_statements.map do |key, values|
           attribute = find_attribute_by(values)
           [key, attribute]
         end
-        info_hash = found_attributes.to_h
-
-        # The name attribute is overridden if the first name and last name are
-        # defined because otherwise it could be the principal name which is not
-        # a user readable name as expected by OmniAuth.
-        name = "#{info_hash["first_name"]} #{info_hash["last_name"]}".strip
-        info_hash["name"] = name if name.present?
-
-        info_hash
+        Hash[found_attributes]
       end
+
+      extra { { raw_info: @attributes.attributes } }
+
+      # def self.extra_stack(context)
+      #   compile_stack([], :extra, context)
+      # end
+
 
       def initialize(app, *args, &block)
         super
@@ -56,7 +65,7 @@ module OmniAuth
         options[:sp_name_qualifier] = options[:sp_entity_id] if options[:sp_name_qualifier].nil?
 
         # Remove the nil options from the origianl options array that will be
-        # defined by the MSAD options
+        # defined by the FedERa options
         [
           :idp_name_qualifier,
           :name_identifier_format,
@@ -78,7 +87,7 @@ module OmniAuth
         authn_request = OneLogin::RubySaml::Authrequest.new
 
         with_settings do |settings|
-          redirect_to(authn_request.create(settings, additional_params_for_authn_request.merge('RelayState' => '/')))
+          redirect_to(authn_request.create(settings, additional_params_for_authn_request.merge('RelayState' => Base64.strict_encode64(session['omniauth.origin'] || '/'))))
         end
       end
 
@@ -138,7 +147,7 @@ module OmniAuth
         begin
           idp_metadata_parser.parse_remote_to_hash(
             options.idp_metadata_url,
-            true
+            !Rails.env.development?
           )
         rescue ::URI::InvalidURIError
           # Allow the OmniAuth strategy to be configured with empty settings
@@ -244,6 +253,7 @@ module OmniAuth
 
         state
       end
+
     end
   end
 end

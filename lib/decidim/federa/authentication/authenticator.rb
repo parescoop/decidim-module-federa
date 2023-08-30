@@ -117,19 +117,34 @@ module Decidim
           authorization
         end
 
-        def update_user!(user)
+        def update_user!(user, force= false)
           user_changed = false
-          if verified_email.present? && (user.email != verified_email)
+          generated_password = SecureRandom.hex
+          user.password = generated_password
+          user.password_confirmation = generated_password
+          user.save
+
+          if (verified_email.present? && (user.email != verified_email)) || force
             user_changed = true
+            if is_spid?
+              user.skip_reconfirmation!
+            else
+              user.confirmed_at = nil if user.email != verified_email
+              # user.resend_confirmation_instructions unless user.confirmed?
+            end
             user.email = verified_email
-            user.skip_reconfirmation!
           end
           # user.newsletter_notifications_at = Time.zone.now if user_newsletter_subscription?(user)
+          notification_email = user.email_changed?
           if user.valid?
-            user.save! if user_changed
+            if user_changed
+              if user.save! && is_spid? && notification_email
+                Decidim::Federa::UpdateEmailPuaJob.perform_later(user)
+              end
+            end
           else
             if (user.errors.details.all?{ |k,v| k == :email && v.flatten.map{ |k| k[:error] }.all?(:taken) } rescue false)
-              Rails.logger.info("decidim-module-federa || L'utente #{user.id} ha un'altro account decidim con la stessa email dello FedERa richiesto. Non aggiorno l'email.")
+              Rails.logger.info("decidim-module-federa || L'utente #{user.id} ha un'altro account decidim con la stessa email dello PUA richiesto. Non aggiorno l'email.")
               user.reload
             end
           end

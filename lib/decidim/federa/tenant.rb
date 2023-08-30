@@ -85,11 +85,11 @@ module Decidim
 
       # Extra configurazioni per la strategy omniauth
       config_accessor :extra do
-      {}
+        {}
       end
 
       # Per specificare gli attributi
-      config_accessor :attribute_services do
+      config_accessor :fields do
         []
       end
 
@@ -106,6 +106,11 @@ module Decidim
       # le validazioni) prima che l'utente venga autenticato.
       config_accessor :authenticator_class do
         Decidim::Federa::Authentication::Authenticator
+      end
+
+      # Il livello SPID richiesto dal tenant
+      config_accessor :spid_level do
+        2
       end
 
       # Permette di customizzare parte del i metadata collezionati dagli
@@ -162,8 +167,9 @@ module Decidim
           certificate: certificate,
           private_key: private_key,
           assertion_consumer_service_url: "#{sp_entity_id}/users/auth/#{config.name}/callback",
-          request_attributes: attribute_services,
-          single_logout_service_url: "#{sp_entity_id}/users/auth/#{config.name}/slo"
+          request_attributes: fields,
+          single_logout_service_url: "#{sp_entity_id}/users/auth/#{config.name}/slo",
+          spid_level: spid_level
         }.merge(extra)
       end
 
@@ -179,6 +185,9 @@ module Decidim
         # the failures properly. Without this, the failure requests would end
         # up in an ActionController::InvalidAuthenticityToken exception.
         devise_failure_app = OmniAuth.config.on_failure
+        # OmniAuth.config.before_callback_phase do |env|
+        #   env['omniauth.origin'] = '/users/show'
+        # end
         OmniAuth.config.on_failure = proc do |env|
           if env["PATH_INFO"] && env["PATH_INFO"].match?(%r{^/users/auth/#{config.name}($|/.+)})
             env["devise.mapping"] = ::Devise.mappings[:user]
@@ -206,13 +215,18 @@ module Decidim
 
             match(
               "/users/auth/#{config.name}/callback",
-              to: "omniauth_callbacks#msad",
+              to: "omniauth_callbacks#federa",
               as: "user_#{config.name}_omniauth_callback",
               via: [:get, :post]
             )
 
-            # Add the SLO and SPSLO paths to be able to pass these requests to
-            # OmniAuth.
+            match(
+              "/users/auth/#{config.name}/create",
+              to: "omniauth_callbacks#create",
+              as: "user_#{config.name}_omniauth_create",
+              via: [:post, :put, :patch]
+            )
+
             match(
               "/users/auth/#{config.name}/slo",
               to: "sessions#slo",

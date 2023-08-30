@@ -86,6 +86,10 @@ it:
         send_notification:
           dear_user: "Gentile utente,"
           content: "il tuo account Decidim è stato associato correttamente al tuo account FedERa. D'ora in avanti le tue credenziali sono state disattivate e potrei continuare ad accedere con il tuo account FedERa."
+        send_update_email_notification:
+          subject: Aggiornamento email account avvenuta con successo
+          dear_user: "Gentile utente,"
+          content: "la tua email è stata correttamente aggiornata con l'email del tuo account FedERa"
       verification:
         authorizations:
           create:
