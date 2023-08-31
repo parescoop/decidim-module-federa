@@ -15,7 +15,7 @@ module Decidim
 
         def verified_email
           @verified_email ||= begin
-                                oauth_data[:info][:email]
+                                oauth_data[:info][:email].try(:downcase)
                               rescue
                                 nil
                               end
@@ -129,17 +129,17 @@ module Decidim
             if is_spid?
               user.skip_reconfirmation!
             else
-              user.confirmed_at = nil if user.email != verified_email
+              user.confirmed_at = nil if verified_email.present? && (user.email != verified_email)
               # user.resend_confirmation_instructions unless user.confirmed?
             end
-            user.email = verified_email
+            user.email = verified_email if verified_email.present?
           end
           # user.newsletter_notifications_at = Time.zone.now if user_newsletter_subscription?(user)
           notification_email = user.email_changed?
           if user.valid?
             if user_changed
               if user.save! && is_spid? && notification_email
-                Decidim::Federa::UpdateEmailPuaJob.perform_later(user)
+                Decidim::Federa::UpdateEmailFederaJob.perform_later(user)
               end
             end
           else
@@ -187,6 +187,10 @@ module Decidim
           @person_identifier_digest ||= Digest::MD5.hexdigest(
             "#{tenant.name.upcase}:#{user_identifier}:#{Rails.application.secrets.secret_key_base}"
           )
+        end
+
+        def is_spid?
+          !("smartcard" == oauth_hash.dig(:extra, :raw_info, :authenticationMethod).try(:first).try(:downcase))
         end
       end
     end

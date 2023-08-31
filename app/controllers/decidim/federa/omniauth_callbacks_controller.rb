@@ -251,7 +251,7 @@ module Decidim
       end
 
       def current_provider
-        @current_provider ||= current_provider = oauth_hash.dig(:extra, :raw_info, :authenticationMethod)
+        @current_provider ||= current_provider = oauth_hash.dig(:extra, :raw_info, :authenticationMethod).try(:first)
       end
     end
   end

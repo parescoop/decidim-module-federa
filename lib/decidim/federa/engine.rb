@@ -38,6 +38,10 @@ module Decidim
         Decidim::Federa.setup!
       end
 
+      initializer "decidim_federa.session.same_site_none", after: "Expire sessions" do
+        Rails.application.config.action_dispatch.cookies_same_site_protection = :none
+      end
+
       overrides = "#{Decidim::Federa::Engine.root}/app/overrides"
       config.to_prepare do
         Rails.autoloaders.main.ignore(overrides)
