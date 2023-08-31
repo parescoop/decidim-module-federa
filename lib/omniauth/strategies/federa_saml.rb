@@ -184,6 +184,11 @@ module OmniAuth
           settings[:security][:logout_requests_signed] = true
           settings[:security][:logout_responses_signed] = true
         end
+
+        if options.new_certificate
+          settings[:certificate_new] = options.new_certificate
+        end
+
         settings[:security].merge!(options.security)
 
         # Add some extra information that is necessary for correctly formatted

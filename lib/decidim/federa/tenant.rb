@@ -148,6 +148,12 @@ module Decidim
         config.certificate
       end
 
+      def new_certificate
+        return File.read(new_certificate_file) if new_certificate_file && File.exists?(Rails.root.join(new_certificate_file))
+
+        config.new_certificate
+      end
+
       def private_key
         return File.read(private_key_file) if private_key_file
 
@@ -166,6 +172,7 @@ module Decidim
           sp_metadata: sp_metadata,
           certificate: certificate,
           private_key: private_key,
+          new_certificate: new_certificate,
           assertion_consumer_service_url: "#{sp_entity_id}/users/auth/#{config.name}/callback",
           request_attributes: fields,
           single_logout_service_url: "#{sp_entity_id}/users/auth/#{config.name}/slo",

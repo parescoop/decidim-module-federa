@@ -37,24 +37,25 @@ Decidim::Federa.configure do |config|
   # Il livello SPID richiesto dall'app
   config.spid_level = 2
 
-  #todo: verificare
   # Le chiavi che verranno salvate sul DB nell'autorizzazione
   config.metadata_attributes = {
-    name: "name",
-    surname: "familyName",
-    fiscal_code: "fiscalNumber",
-    gender: "gender",
-    birthday: "dateOfBirth",
-    birthplace: "placeOfBirth",
+    name: "nome",
+    surname: "cognome",
+    fiscal_code: "CodiceFiscale",
+    gender: "sesso",
+    birthday: "dataNascita",
+    birthplace: "luogoNascita",
     company_name: "companyName",
     registered_office: "registeredOffice",
     iva_code: "ivaCode",
     id_card: "idCard",
-    mobile_phone: "mobilePhone",
-    email: "email",
-    address: "address",
-    digital_address: "digitalAddress"
+    mobile_phone: "cellulare",
+    email: "emailAddressPersonale",
+    address: "indirizzoResidenza",
+    digital_address: "emailAddress",
+    spid_code: "spidCode"
   }
+
 
   # Extra metadata da include nel metadata. Esempio:
   #
