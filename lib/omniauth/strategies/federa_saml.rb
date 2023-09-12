@@ -104,7 +104,7 @@ module OmniAuth
         else
           r = Rack::Response.new"
             <html><body onload='javascript:document.forms[0].submit()'>
-              <form method='post' action='#{uri.split("?").first}'>
+              <form style='display:none;' method='post' action='#{uri.split("?").first}'>
                 <input type='hidden' name='SAMLRequest' value='#{Base64.encode64(OneLogin::RubySaml::SamlMessage.new.send(:decode_raw_saml, pp["SAMLRequest"].first))}'>
                 <input type='hidden' name='RelayState' value='#{pp["RelayState"].first}'>
                 <input type='submit' value='Invia'/>

@@ -112,6 +112,14 @@ module Decidim
           }
           authorization.save!
 
+          # Integrazione CSV Handler per verifica CF
+          handler_params = { user: user, document_number: user_identifier, document_type: :FEDERA }
+          handler_name = "census_authorization_handler" # TODO: Chiedere se il nome è sempre questo oppure deve diventare una configurazione della gemma?
+          handler = Decidim::AuthorizationHandler.handler_for(handler_name, handler_params)
+
+          Decidim::Authorization.create_or_update_from(handler) if handler && handler.valid? && !handler.granted?
+          #########
+
           authorization.grant! unless authorization.granted?
 
           authorization
