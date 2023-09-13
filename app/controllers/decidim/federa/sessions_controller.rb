@@ -17,7 +17,7 @@ module Decidim
       end
 
       def slo_callback
-        set_flash_message! :notice, :signed_out if params[:success] == "true"
+        set_flash_message! :notice, :signed_out
         current_user.invalidate_all_sessions!
         return redirect_to(decidim.new_user_session_path) if current_organization.force_users_to_authenticate_before_access_organization
 

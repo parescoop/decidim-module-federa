@@ -158,17 +158,16 @@ module OmniAuth
       end
 
       def federa_options
-        # Returns OneLogin::RubySaml::Settings prepopulated with idp metadata
         settings = federa_metadata_options
 
         if settings[:idp_slo_response_service_url].nil? && settings[:idp_slo_target_url].nil?
-          # Mitigation after ruby-saml update to 1.12.x. This gem has been
-          # originally developed relying on the `:idp_slo_target_url` settings
-          # which was removed from the newer versions. The SLO requests won't
-          # work unless `:idp_slo_response_service_url` is defined in the
-          # metadata through the `ResponseLocation` attribute in the
-          # `<SingleLogoutService />` node.
-          settings[:idp_slo_target_url] ||= settings[:idp_slo_service_url]
+          uri = URI(settings[:idp_entity_id])
+          uri.path = "/logout"
+          params = URI.decode_www_form(uri.query || "") << ['spid', options["sp_entity_id"]]
+          params << ['spurl', "#{options["sp_entity_id"]}/users/slo_callback",]
+          uri.query = URI.encode_www_form(params)
+          settings[:idp_slo_service_url] ||= uri.to_s
+          settings[:idp_slo_target_url] ||= settings[:idp_slo_service_url] || uri.to_s
         end
 
         # Define the security settings as there are some defaults that need to be
@@ -230,29 +229,17 @@ module OmniAuth
         end
       end
 
-      # End the local user session BEFORE sending the logout request to the
-      # identity provider.
       def other_phase_for_spslo
         return super unless options.idp_slo_service_url
 
         with_settings do |settings|
-          # Some session variables are needed when generating the logout request
-          request = generate_logout_request(settings)
-          # Destroy the local user session
-          options[:idp_slo_session_destroy].call @env, session
-          # Send the logout request to the identity provider
-          redirect(request)
+          redirect(options.idp_slo_service_url)
         end
       end
 
-      # Overridden to disable passing the relay state with a request parameter
-      # which is possible in the default implementation.
       def slo_relay_state
         state = super
 
-        # Ensure that we are only using the relay states to redirect the user
-        # within the current website. This forces the relay state to always
-        # start with a single forward slash character (/).
         return "/" unless state
         return "/" unless state.match?(%r{^/[^/].*})
 

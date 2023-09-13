@@ -46,17 +46,6 @@ module Decidim
         nil
       end
 
-      config_accessor :idp_slo_session_destroy do
-        proc do |_env, session|
-          flash = session["flash"]
-          return_to = session["user_return_to"]
-          result = session.clear
-          session["flash"] = flash if flash
-          session["user_return_to"] = return_to if return_to
-          result
-        end
-      end
-
       # Le chiavi che verranno salvate nell'autorizzazione (record Decidim::Authorization)
       config_accessor :metadata_attributes do
         {}
@@ -168,7 +157,6 @@ module Decidim
           idp_metadata_url: idp_metadata_url,
           sp_entity_id: sp_entity_id,
           sp_name_qualifier: sp_entity_id,
-          idp_slo_session_destroy: idp_slo_session_destroy,
           sp_metadata: sp_metadata,
           certificate: certificate,
           private_key: private_key,
