@@ -11,14 +11,15 @@ module Decidim
         i = current_user.identities.find_by(provider: tenant.name) rescue nil
         Decidim::ActionLogger.log(:logout, current_user, i, {}) if i
 
+        set_flash_message! :notice, :signed_out
+        current_user.invalidate_all_sessions!
+
         sign_out_path = send("user_#{tenant.name}_omniauth_spslo_path")
 
         redirect_to sign_out_path
       end
 
       def slo_callback
-        set_flash_message! :notice, :signed_out
-        current_user.invalidate_all_sessions!
         return redirect_to(decidim.new_user_session_path) if current_organization.force_users_to_authenticate_before_access_organization
 
         redirect_to params[:path] || decidim.root_path
