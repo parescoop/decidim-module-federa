@@ -94,5 +94,8 @@ Decidim::Federa.configure do |config|
     { name: "emailAddress", friendly_name: "Indirizzo digitale", is_required: true }
   ]
 
+  # Permette di aggiungere altre autorizzazioni. Es: ["census_authorization_handler"]
+  config.authorization_handlers =  []
+
 
 end

@@ -108,6 +108,11 @@ module Decidim
         Decidim::Federa::Verification::MetadataCollector
       end
 
+      # Permette di aggiungere altre autorizzazioni
+      config_accessor :authorization_handlers do
+        []
+      end
+
       def initialize
         yield self
       end
@@ -123,6 +128,25 @@ module Decidim
 
       def metadata_collector_for(saml_attributes)
         metadata_collector_class.new(self, saml_attributes)
+      end
+
+      def run_authorization_handlers(handler_params)
+        authorization_handlers.each do |handler_name|
+          handler = Decidim::AuthorizationHandler.handler_for(handler_name, handler_params)
+          if handler && handler.valid?
+            authorization = Decidim::Authorization.find_or_initialize_by(
+              user: handler.user,
+              name: handler.handler_name
+            )
+            authorization.attributes = {
+              unique_id: handler.unique_id,
+              metadata: handler.metadata
+            }
+            authorization.save
+
+            authorization.grant! unless authorization.granted?
+          end
+        end
       end
 
       def sp_entity_id
