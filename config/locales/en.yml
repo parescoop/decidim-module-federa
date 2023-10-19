@@ -52,7 +52,7 @@ en:
         failure:
           success_status: "An error occurred while logging in."
           already_authorized: "User already logged in"
-          identity_bound_to_other_user: "An error occurred while logging in."
+          identity_bound_to_other_user: "FedERa account is already used by another user."
           session_expiration: "Session expired"
           conditions: ""
         create:

@@ -50,7 +50,7 @@ it:
         failure:
           success_status: "Si è verificato un errore durante il login."
           already_authorized: "Utente già loggato"
-          identity_bound_to_other_user: "Si è verificato un errore durante il login."
+          identity_bound_to_other_user: "L'account fedERa è già utilizzato da un altro utente."
           session_expiration: "Sessione scaduta"
           conditions: ""
         create:
