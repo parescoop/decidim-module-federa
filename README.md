@@ -1,5 +1,5 @@
 # Decidim FedERa
-Autenticazione FedERa per Decidim v0.25.2. Questa gemma si appoggia: [ruby-saml](https://github.com/onelogin/ruby-saml), [decidim](https://github.com/decidim/decidim/tree/v0.25.2) e [omniauth](https://github.com/omniauth/omniauth).
+Autenticazione FedERa per Decidim v0.26.x. Questa gemma si appoggia: [ruby-saml](https://github.com/onelogin/ruby-saml), [decidim](https://github.com/decidim/decidim/tree/v0.25.2) e [omniauth](https://github.com/omniauth/omniauth).
 
 Ispirata a [decidim-msad](https://github.com/mainio/decidim-module-msad).
 
