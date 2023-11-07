@@ -6,7 +6,7 @@ it:
         decidim/user:
           attributes:
             email:
-              cant_recover_password_due_federa: Devi effettuare l'accesso tramite FedERa
+              cant_recover_password_due_federa: Devi effettuare l'accesso tramite FedERa (SPID, CIE, CNS)
   decidim:
     admin:
       filters:
@@ -35,6 +35,8 @@ it:
         login: "%{user_name}  ha effettuato il login con il provider %{resource_name} %{space_name}"
         registration: "%{user_name} si è registrato con il provider %{resource_name} %{space_name} "
     components:
+      decidim_federa:
+        name: FedERa
       federa:
         name: FedERa
     federa:
@@ -45,23 +47,25 @@ it:
         invitations:
           edit:
             header: Completa la registrazione
-            subtitle: Effettua il login tramite FedERa
+            subtitle: Effettua il login tramite FedERa (SPID, CIE, CNS)
       omniauth_callbacks:
         failure:
           success_status: "Si è verificato un errore durante il login."
           already_authorized: "Utente già loggato"
-          identity_bound_to_other_user: "L'account fedERa è già utilizzato da un altro utente."
+          identity_bound_to_other_user: "L'account FedERa è già utilizzato da un altro utente."
           session_expiration: "Sessione scaduta"
           conditions: ""
         create:
           email_already_exists: Un altro account utilizza lo stesso indirizzo email
           email_different: L'indirizzo email inserito è diverso da quello dell'invito
         new:
-          complete_profile: Completa il profile
+          complete_profile: Completa il profilo
           nickname_help: Il tuo alias in %{organization}. Può contenere solo lettere, numeri, '-' e '_'.
           sign_up: Completa il tuo profilo
           subtitle: Si prega di compilare il seguente modulo per completare la registrazione
-          username_help: Username che appare nei tuoi post. Al fine di garantire l'anonimato, può essere qualsiasi nome.
+          username_help: "Nome \"pubblico\" che comparirà a firma di tutti i tuoi contributi e che sarà accessibile a tutti i navigatori, anche non iscritti alla piattaforma."
+          federa_help: Non hai SPID, CIE o CNS? Se hai già un account sulla piattaforma %{link}. Altrimenti registrati compilando i campi qui sotto.
+          federa_sessions_help: Non hai SPID, CIE o CNS? Se hai già un account sulla piattaforma accedi con le tue credenziali. Altrimenti %{link}.
       slo_request:
         failure: Il logout non è andato a buon fine
         success: Logout completato con successo
@@ -85,7 +89,7 @@ it:
         subject: associazione account avvenuta con successo
         send_notification:
           dear_user: "Gentile utente,"
-          content: "il tuo account Decidim è stato associato correttamente al tuo account FedERa. D'ora in avanti le tue credenziali sono state disattivate e potrei continuare ad accedere con il tuo account FedERa."
+          content: "il tuo vecchio account è stato associato correttamente al tuo account FedERa. Le tue vecchie credenziali sono state disattivate. D'ora in avanti per accedere alla piattaforma dovrai utilizzare FedERa (SPID, CIE o CNS)."
         send_update_email_notification:
           subject: Aggiornamento email account avvenuta con successo
           dear_user: "Gentile utente,"
@@ -108,7 +112,7 @@ it:
   devise:
     shared:
       links:
-        sign_in_with_provider_federa: Login
+        sign_in_with_provider_federa: Entra con SPID, CIE o CNS
     failure:
       user:
-        invalid_due_federa: Devi effettuare l'accesso tramite FedERa
+        invalid_due_federa: Devi effettuare l'accesso tramite FedERa (SPID, CIE, CNS)

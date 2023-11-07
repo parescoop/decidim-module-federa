@@ -3,6 +3,6 @@ it:
     authorization_handlers:
       <%= tenant_name %>_identity:
         name: "FedERa"
-        explanation: "Migrazione account decidim verso account FedERa"
+        explanation: "Migrazione account verso account FedERa (SPID, CIE, CNS)"
         title: Migrazione account
-        description: Il tuo account Decidim verrà associato al tuo account FedERa. Le tue credenziali saranno disattivate e potrai continuare ad accedere con il tuo account FedERa.
+        description: Il tuo vecchio account verrà associato al tuo account FedERa. Le tue vecchie credenziali saranno disattivate e potrai continuare ad accedere con il tuo account FedERa (SPID, CIE, CNS).

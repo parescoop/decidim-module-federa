@@ -6,7 +6,7 @@ en:
         decidim/user:
           attributes:
             email:
-              cant_recover_password_due_federa: You must login via FedERa
+              cant_recover_password_due_federa: You must login via FedERa (SPID, CIE, CNS)
   decidim:
     admin:
       filters:
@@ -47,7 +47,7 @@ en:
         invitations:
           edit:
             header: Complete registration
-            subtitle: Login via FedERa
+            subtitle: Login via FedERa (SPID, CIE, CNS)
       omniauth_callbacks:
         failure:
           success_status: "An error occurred while logging in."
@@ -63,7 +63,9 @@ en:
           nickname_help: Your alias in %{organization}. Can only contain letters, numbers, '-' and '_'.
           sign_up: Please complete your profile
           subtitle: Please fill in the following form in order to complete the sign up
-          username_help: Public name that appears on your posts. With the aim of guaranteeing the anonymity, can be any name.
+          username_help: "\"Public\" name which will appear in the signature of all your contributions and which will be accessible to all surfers, even those who are not registered on the platform."
+          federa_help: Don't have SPID, CIE or CNS? If you already have an account on the %{link} platform. Otherwise register by filling in the fields below.
+          federa_sessions_help: Don't have SPID, CIE or CNS? If you already have an account on the platform, log in with your credentials. Otherwise %{link}.
       slo_request:
         failure: The logout was not successful
         success: Logout completed successfully
@@ -87,7 +89,7 @@ en:
         subject: account association successful
         send_notification:
           dear_user: "Dear user,"
-          content: "your Decidim account has been successfully associated with your FedERa account. From now on your credentials have been deactivated and I may continue to log in with your FedERa account."
+          content: "your old account has been successfully associated with your FedERa account. Your old credentials have been deactivated. From now on, to access the platform you will have to use FedERa (SPID, CIE or CNS)."
         send_update_email_notification:
           subject: Account email updated
           dear_user: "Dear user,"
@@ -109,7 +111,7 @@ en:
   devise:
     shared:
       links:
-        sign_in_with_provider_federa: Login
+        sign_in_with_provider_federa: Login with SPID, CIE or CNS
     failure:
       user:
-        invalid_due_federa: You must login via FedERa
+        invalid_due_federa: You must login via FedERa (SPID, CIE, CNS)
