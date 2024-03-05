@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.authors = ["Lorenzo Angelone"]
   s.email = ["l.angelone@kapusons.it"]
   s.licenses = ["MIT"]
-  s.homepage = "https://github.com/kapusons/decidim-module-federa"
+  s.homepage = "https://github.com/parescoop/decidim-module-federa"
   s.required_ruby_version = ">= 2.7"
 
   s.name = "decidim-federa"
