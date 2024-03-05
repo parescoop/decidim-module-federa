@@ -11,7 +11,7 @@ Deface::Override.new(virtual_path: "decidim/devise/invitations/edit",
       </div>
     </div>
 
-    <% size = current_organization.enabled_omniauth_providers.dig(:federa, :button_size).to_sym %>
+    <% size = current_organization.enabled_omniauth_providers.dig(:federa, :button_size).try(:to_sym) %>
     <%- if current_organization.enabled_omniauth_providers.keys.include?(:federa) %>
       <div class="row">
         <div class="columns large-6 medium-10 medium-centered">
