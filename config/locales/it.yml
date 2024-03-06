@@ -108,6 +108,7 @@ it:
             certificate: "Il certificato scade il %{date}"
             new_certificate: "Il nuovo certificato scade il %{date}"
             button_size: "Grandezza bottone deve essere in [ s, m, l, xl]. Default: m"
+            entity_id: "Inserire l'URL dell'entity ID"
 
   devise:
     shared:

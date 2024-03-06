@@ -108,6 +108,7 @@ en:
             certificate: "The certificate expires on %{date}"
             new_certificate: "The new certificate expires on %{date}"
             button_size: "Button size must to be in [ s, m, l, xl]. Default: m"
+            entity_id: "Enter the URL of the entity ID"
   devise:
     shared:
       links:
