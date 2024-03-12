@@ -10,8 +10,13 @@ Deface::Override.new(virtual_path: "decidim/devise/sessions/new",
   <div class="row collapse">
     <div class="columns large-5 large-centered text-center page-title">
       <p>
-        <% if current_organization.sign_up_enabled? %>
+        <% if current_organization.sign_up_enabled? && current_organization.enabled_omniauth_providers.dig(:federa).present? %>
           <%= t("decidim.federa.omniauth_callbacks.new.federa_sessions_help", link: link_to(t("decidim.devise.registrations.new.sign_up").try(:downcase), new_user_registration_path)).html_safe %>
+        <% elsif current_organization.sign_up_enabled? %>
+          <p>
+            <%= t(".are_you_new?") %>
+            <%= link_to t(".register"), new_user_registration_path %>
+          </p>
         <% elsif current_organization.sign_in_enabled? %>
           <p>
             <%= t(".sign_up_disabled") %>
