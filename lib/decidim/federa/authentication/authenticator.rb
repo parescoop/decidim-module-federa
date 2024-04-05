@@ -114,7 +114,7 @@ module Decidim
 
           # Dipendenza decidim-minors_auth
           if user && user.respond_to?(:fiscal_code) && defined?(Decidim::MinorsAuth)
-            user.update(fiscal_code: user_identifier.try(:upcase!))
+            user.update(fiscal_code: user_identifier.try(:upcase))
           end
 
           tenant.run_authorization_handlers(user: user, document_number: user_identifier, document_type: :FEDERA)
