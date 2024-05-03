@@ -40,7 +40,7 @@ module Decidim
         end
 
         @user.tos_agreement = "1"
-        @user.save! && persisted && !@user.must_log_with_federa? && Decidim::Federa::FederaJob.perform_later(@user)
+        @user.save! && ((persisted && !@user.must_log_with_federa? && Decidim::Federa::FederaJob.perform_later(@user)) || (!persisted && @user.send(:after_confirmation)))
       end
 
     end
