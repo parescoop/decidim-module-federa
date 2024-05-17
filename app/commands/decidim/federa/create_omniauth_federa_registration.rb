@@ -40,7 +40,23 @@ module Decidim
         end
 
         @user.tos_agreement = "1"
-        @user.save! && ((persisted && !@user.must_log_with_federa? && Decidim::Federa::FederaJob.perform_later(@user)) || (!persisted && @user.send(:after_confirmation)))
+        @user.save! && persisted && !@user.must_log_with_federa? && Decidim::Federa::FederaJob.perform_later(@user)
+      end
+
+      def trigger_omniauth_registration
+        ActiveSupport::Notifications.publish(
+          "decidim.user.omniauth_registration",
+          user_id: @user.id,
+          identity_id: @identity.id,
+          provider: form.provider,
+          uid: form.uid,
+          email: form.email,
+          name: form.name,
+          nickname: form.normalized_nickname,
+          avatar_url: form.avatar_url,
+          raw_data: form.raw_data
+        )
+        @user.send(:after_confirmation)
       end
 
     end
