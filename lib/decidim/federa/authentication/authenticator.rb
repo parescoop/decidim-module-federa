@@ -29,7 +29,7 @@ module Decidim
           {
             provider: oauth_data[:provider],
             uid: user_identifier,
-            name: existing_user.try(:name) || oauth_data[:info][:name],
+            name: existing_user.try(:name) || "#{oauth_data[:info][:name]} #{oauth_data.dig(:info, :surname)}",
             # nickname: oauth_data[:info][:nickname] || oauth_data[:info][:name],
             oauth_signature: user_signature,
             avatar_url: oauth_data[:info][:image],
