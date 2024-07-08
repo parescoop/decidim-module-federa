@@ -3,6 +3,7 @@ module Decidim
     class OmniauthFederaRegistrationForm < ::Decidim::OmniauthRegistrationForm
 
       attribute :invitation_token, String
+      attribute :newsletter, Boolean
 
       validates :nickname, presence: true
 
